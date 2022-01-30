@@ -86,28 +86,34 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     if(hlayer == _MAIN)
         return;
 
-    uint8_t r,g,b;
+    HSV hsv;
     switch (hlayer) {
         case _FN1:
-            r = 0xFF; g = 0x00; b = 0x00;
+            hsv.h = 0; hsv.s = 255; hsv.v = 255;  //RED
             break;
         case _FN2:
-            r = 0x00; g = 0xFF; b = 0x00;
+            hsv.h = 85; hsv.s = 255; hsv.v = 255;  //GREEN
             break;
         case _FN3:
-            r = 0x00; g = 0x00; b = 0xFF;
+            hsv.h = 170; hsv.s = 255; hsv.v = 255;  //BLUE
             break;
         case _FN4:
-            r = 0xFF; g = 0xFF; b = 0x00;
+            hsv.h = 43; hsv.s = 255; hsv.v = 255;  //YELLOW
             break;
         default:
-            r = g = b = 0x00;
+            hsv.h = 0; hsv.s = 0; hsv.v = 0;   //BLACK
             break;
     }
 
+    // Uncomment to respect RGB_MATRIX_MAXIMUM_BRIGHTNESS
+    //if (hsv.v > rgb_matrix_get_val()) {
+    //    hsv.v = rgb_matrix_get_val();
+    //}
+
+    RGB rgb = hsv_to_rgb(hsv);
     for (uint8_t i = led_min; i <= led_max; i++) {
         if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_UNDERGLOW) ) {
-                rgb_matrix_set_color(i, r, g, b);
+                rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
     }
 }
